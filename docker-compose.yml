@@ -9,6 +9,7 @@ services:
       - 8080:80
     volumes:
       - static:/static
+      - media:/media
 
   backend:
     build:
@@ -24,6 +25,7 @@ services:
       DB_PORT: "${DB_PORT}"
     volumes:
       - static:/code/collected_static/
+      - media:/code/media
 
   frontend:
     build:
@@ -41,7 +43,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - database:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
       interval: 10s
@@ -49,5 +51,6 @@ services:
       retries: 5
 
 volumes:
-  database:
+  pg_data:
   static:
+  media:
