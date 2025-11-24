@@ -25,6 +25,4 @@ dockerhub_username: ваш_логин_на_докерхабе
 
 ## Запуск
 
-* `docker compose exec backend python manage.py migrate` - накатываем миграции
-* `docker compose exec backend python manage.py createsuperuser` - создаём админа
-* `docker compose exec backend python manage.py collectstatic`
+* `docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser`
