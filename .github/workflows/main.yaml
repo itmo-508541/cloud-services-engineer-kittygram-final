@@ -118,9 +118,9 @@ jobs:
           docker compose -f docker-compose.production.yml pull
           docker compose -f docker-compose.production.yml down
           docker compose -f docker-compose.production.yml up -d
-          docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-          docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+          docker compose -f docker-compose.production.yml exec backend make migrate collectstatic
 
+  # 0. добавить Makefile для backend и отвечать yes
   # 1. добавить шаг с запуском отправки сообщения
   # 2. запустить pytest tests/
   # 3. проверить что функциональность проекта Kittygram соответствует описанию https://storage.yandexcloud.net/practicum-devops/dcm/kittygram-project.pdf
