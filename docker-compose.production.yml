@@ -1,6 +1,6 @@
 services:
   gateway:
-    image: itmo508541/kittygram_backend
+    image: itmo508541/kittygram_gateway:latest
     depends_on:
       - backend
     ports:
@@ -10,7 +10,7 @@ services:
       - media:/media
 
   backend:
-    image: itmo508541/kittygram_frontend
+    image: itmo508541/kittygram_backend:latest
     depends_on:
       - postgres
     environment:
@@ -24,7 +24,7 @@ services:
       - media:/code/media
 
   frontend:
-    image: itmo508541/kittygram_frontend
+    image: itmo508541/kittygram_frontend:latest
     volumes:
       - static:/app/build
 
