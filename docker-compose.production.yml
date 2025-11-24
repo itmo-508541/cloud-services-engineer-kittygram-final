@@ -1,0 +1,50 @@
+services:
+  gateway:
+    image: itmo508541/kittygram_backend
+    depends_on:
+      - backend
+    ports:
+      - 8080:80
+    volumes:
+      - static:/static
+      - media:/media
+
+  backend:
+    image: itmo508541/kittygram_frontend
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT}"
+    volumes:
+      - static:/code/collected_static/
+      - media:/code/media
+
+  frontend:
+    image: itmo508541/kittygram_frontend
+    volumes:
+      - static:/app/build
+
+  postgres:
+    image: postgres:13
+    ports:
+      - "5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:
+  static:
+  media:
