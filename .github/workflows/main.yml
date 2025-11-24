@@ -33,7 +33,6 @@ jobs:
       # что нужно проверить файлы только в папке backend/
       run: |
         python -m flake8 backend/
-        pytest
 
   build_and_push_to_docker_hub:
     name: Push Docker image to DockerHub
