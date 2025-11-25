@@ -28,7 +28,6 @@ dockerhub_username: ваш_логин_на_докерхабе
 * `docker compose up -d --build`
 * `docker compose exec backend make migrate collectstatic`
 
-
 ## Первый запуск в production
 
 * `docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser`
