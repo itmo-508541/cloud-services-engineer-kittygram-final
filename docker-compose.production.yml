@@ -4,7 +4,7 @@ services:
     depends_on:
       - backend
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - static:/static
       - media:/media
@@ -19,6 +19,7 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       DB_HOST: "${DB_HOST}"
       DB_PORT: "${DB_PORT}"
+      SECRET_KEY: "${SECRET_KEY}"
     volumes:
       - static:/code/collected_static/
       - media:/code/media

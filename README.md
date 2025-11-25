@@ -23,6 +23,12 @@ dockerhub_username: ваш_логин_на_докерхабе
 - Пуш в ветку main запускает тестирование и деплой Kittygram, а после успешного деплоя вам приходит сообщение в телеграм.
 - В корне проекта есть файл `kittygram_workflow.yml`.
 
-## Запуск
+## Запуск в dev
+
+* `docker compose up -d --build`
+* `docker compose exec backend make migrate collectstatic`
+
+
+## Первый запуск в production
 
 * `docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser`

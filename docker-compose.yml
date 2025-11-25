@@ -23,6 +23,8 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       DB_HOST: "${DB_HOST}"
       DB_PORT: "${DB_PORT}"
+      SECRET_KEY: "${SECRET_KEY}"
+      DEBUG: "1"
     volumes:
       - static:/code/collected_static/
       - media:/code/media
