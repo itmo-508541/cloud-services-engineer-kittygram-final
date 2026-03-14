@@ -65,6 +65,7 @@ resource "local_file" "tests_yml" {
     dockerhub_username: "itmo508541"
   })
   filename = "../tests.yml"
+  file_permission = "0644"
 }
 
 resource "local_file" "deployment_info" {
@@ -73,4 +74,5 @@ resource "local_file" "deployment_info" {
     user = "runner"
   })
   filename = "../deployment.json"
+  file_permission = "0644"
 }
