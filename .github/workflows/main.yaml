@@ -99,22 +99,35 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Read host from JSON
+      id: get_host
+      run: |
+        VALUE=$(cat deployment.json | jq -r '.host')
+        echo "host=$VALUE" >> $GITHUB_OUTPUT
+
+    - name: Read user from JSON
+      id: get_user
+      run: |
+        VALUE=$(cat deployment.json | jq -r '.user')
+        echo "user=$VALUE" >> $GITHUB_OUTPUT
+
     - name: Copy docker-compose.production.yml via ssh
       uses: appleboy/scp-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
+        host: ${{ steps.get_host.outputs.host }}
+        username: ${{ steps.get_user.outputs.user }}
         key: ${{ secrets.SSH_KEY }}
         source: "docker-compose.production.yml"
-        target: "/home/ubuntu/kittygram/"
+        target: "/srv/"
+
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
+        host: ${{ steps.get_host.outputs.host }}
+        username: ${{ steps.get_user.outputs.user }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd ~/kittygram
+          cd /srv/
           docker compose -f docker-compose.production.yml pull
           docker compose -f docker-compose.production.yml up -d --force-recreate --remove-orphans
           docker compose -f docker-compose.production.yml exec backend make migrate collectstatic
