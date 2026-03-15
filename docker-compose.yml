@@ -16,7 +16,12 @@ services:
       context: ./backend/
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+        start_period: 120s
+        interval: 30s
+        timeout: 10s
+        retries: 5
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
