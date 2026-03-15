@@ -7,9 +7,35 @@ on:
       - main
 
 jobs:
+  infra:
+    name: Infrastructure info
+    runs-on: ubuntu-latest
+    outputs:
+      host: ${{ steps.get_host.outputs.host }}
+      user: ${{ steps.get_user.outputs.user }}
+    steps:
+    - name: Download Artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: infra.yaml
+        branch: main
+        name: deployment_json
+        path: .
+    - name: Read host from JSON
+      id: get_host
+      run: |
+        VALUE=$(cat deployment.json | jq -r '.host')
+        echo "host=$VALUE" >> $GITHUB_OUTPUT
+    - name: Read user from JSON
+      id: get_user
+      run: |
+        VALUE=$(cat deployment.json | jq -r '.user')
+        echo "user=$VALUE" >> $GITHUB_OUTPUT
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    needs: infra
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -96,20 +122,9 @@ jobs:
       - docker_frontend
       - docker_backend
       - docker_gateway
+      - infra
     steps:
     - uses: actions/checkout@v3
-
-    - name: Read host from JSON
-      id: get_host
-      run: |
-        VALUE=$(cat deployment.json | jq -r '.host')
-        echo "host=$VALUE" >> $GITHUB_OUTPUT
-
-    - name: Read user from JSON
-      id: get_user
-      run: |
-        VALUE=$(cat deployment.json | jq -r '.user')
-        echo "user=$VALUE" >> $GITHUB_OUTPUT
 
     - name: Create .env file
       run: |
@@ -124,8 +139,8 @@ jobs:
     - name: Copy docker-compose.production.yml via ssh
       uses: appleboy/scp-action@master
       with:
-        host: ${{ steps.get_host.outputs.host }}
-        username: ${{ steps.get_user.outputs.user }}
+        host: ${{ needs.infra.outputs.host }}
+        username: ${{ needs.infra.outputs.host }}
         key: ${{ secrets.SSH_KEY }}
         source: ".env,docker-compose.production.yml"
         target: "/srv/"
@@ -133,8 +148,8 @@ jobs:
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ steps.get_host.outputs.host }}
-        username: ${{ steps.get_user.outputs.user }}
+        host: ${{ needs.infra.outputs.host}}
+        username: ${{ needs.infra.outputs.host }}
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd /srv/
