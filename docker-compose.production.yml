@@ -12,7 +12,8 @@ services:
   backend:
     image: itmo508541/kittygram_backend:latest
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       POSTGRES_DB: "${POSTGRES_DB}"
       POSTGRES_USER: "${POSTGRES_USER}"
