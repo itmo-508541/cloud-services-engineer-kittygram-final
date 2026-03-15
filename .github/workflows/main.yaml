@@ -32,10 +32,8 @@ jobs:
         VALUE=$(cat deployment.json | jq -r '.user')
         echo "user=$VALUE" >> $GITHUB_OUTPUT
     - name: Check host and user
-      run: |
-        if [ -z "${{ steps.get_host.outputs.host }}" ] || [ -z "${{ steps.get_user.outputs.user }}"]; then
-          exit 1
-        fi
+      if: ${{ steps.get_host.outputs.host == 'null' || steps.get_user.outputs.user == 'null' }}
+      run: exit 1
 
   tests:
     name: Tests
