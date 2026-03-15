@@ -31,6 +31,11 @@ jobs:
       run: |
         VALUE=$(cat deployment.json | jq -r '.user')
         echo "user=$VALUE" >> $GITHUB_OUTPUT
+    - name: Check host and user
+      run: |
+        if [ -z "${{ steps.get_host.outputs.host }}" ] || [ -z "${{ steps.get_user.outputs.user }}"]; then
+          exit 1
+        fi
 
   tests:
     name: Tests
@@ -160,11 +165,13 @@ jobs:
   send_message:
     name: Notification
     runs-on: ubuntu-latest
-    needs: deploy
+    needs:
+      - deploy
+      - infra
     steps:
     - name: Send message
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Kittygram на сервере!
+        message: "Kittygram на сервере ${{ needs.infra.outputs.host}}!"
