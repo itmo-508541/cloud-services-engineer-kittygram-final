@@ -19,7 +19,7 @@ jobs:
       with:
         workflow: infra.yaml
         branch: main
-        name: deployment_json
+        name: infrastructure-info
         path: .
     - name: Read host from JSON
       id: get_host
