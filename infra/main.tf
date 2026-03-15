@@ -1,4 +1,3 @@
-# terraform init -backend-config="access_key=$(cat yandex-s3.json | jq -r .access_key)" -backend-config="secret_key=$(cat yandex-s3.json | jq -r .secret_key)"
 locals {
     cloud_id  = "b1g27vf45j3ju5976tkl"
     folder_id = "b1g5sejtlu2jduscaqk4"
@@ -58,17 +57,7 @@ module "docker" {
     sg_id           = module.network.sg_id
 }
 
-resource "local_file" "tests_yml" {
-  content = yamlencode({
-    repo_owner = "itmo-508541"
-    kittygram_domain = format("http://%s/", module.docker.vm-external-ip)
-    dockerhub_username: "itmo508541"
-  })
-  filename = "../tests.yml"
-  file_permission = "0644"
-}
-
-resource "local_file" "deployment_info" {
+resource "local_file" "deployment_json" {
   content = jsonencode({
     host = module.docker.vm-external-ip
     user = "runner"

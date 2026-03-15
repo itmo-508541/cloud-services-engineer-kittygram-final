@@ -1,0 +1,49 @@
+# .github/workflows/infra.yml
+name: Infra workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        description: 'Select the Terraform action'
+        required: true
+        default: 'plan'
+        options:
+          - plan
+          - apply
+          - destroy 
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.7
+
+      - name: Set up access keys
+        working-directory: ./infra
+        run: |
+          echo "${{ secrets.SA_KEY_JSON }}" | base64 -d > ./yandex-sa.json
+          echo "${{ secrets.S3_KEY_JSON }}" | base64 -d > ./yandex-s3.json
+
+      - name: Initialize Terraform
+        working-directory: ./infra
+        run: terraform init -backend-config="access_key=$(cat yandex-s3.json | jq -r .access_key)" -backend-config="secret_key=$(cat yandex-s3.json | jq -r .secret_key)"
+
+      - name: Terraform Plan
+        working-directory: ./infra
+        if: ${{ github.event.inputs.action == 'plan' }}
+        run: terraform plan
+
+      # - name: Save IP as Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: server-ip
+      #     path: |
+      #       deployment.json
+      #     retention-days: 90
