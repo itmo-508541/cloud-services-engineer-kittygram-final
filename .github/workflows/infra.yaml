@@ -50,7 +50,7 @@ jobs:
         if: ${{ github.event.inputs.action == 'destroy' }}
         run: |
           terraform destroy -auto-approve
-          echo "{}" > deployment.json
+          echo "{}" > ../deployment.json
 
       - name: Save IP as Artifact
         if: ${{ github.event.inputs.action != 'plan' }}
