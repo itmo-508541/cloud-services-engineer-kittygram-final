@@ -12,7 +12,8 @@ DEPLOY_INFO_FILE_NAME = 'tests.yml'
 KITTYGRAM_DOMAIN_KEY = 'kittygram_domain'
 DOCKERFILE_NAME = 'Dockerfile'
 DOCKERHUB_USERNAME_KEY = 'dockerhub_username'
-WORKFLOW_FILE = 'kittygram_workflow.yml'
+MAIN_WORKFLOW_FILE = 'main.yaml'
+INFRA_WORKFLOW_FILE = 'infra.yaml'
 DOCKER_COMPOSE_PROD_FILE_NAME = 'docker-compose.production.yml'
 
 for dir_name in (BACKEND_DIR_NAME, FRONTEND_DIR_NAME, NGINX_DIR_NAME):
@@ -55,8 +56,18 @@ def base_dir() -> Path:
 
 
 @pytest.fixture
-def workflow_file_name() -> str:
-    return WORKFLOW_FILE
+def workflows_dir() -> Path:
+    return BASE_DIR / '.github/workflows'
+
+
+@pytest.fixture
+def main_workflow_file_name() -> str:
+    return MAIN_WORKFLOW_FILE
+
+
+@pytest.fixture
+def infra_workflow_file_name() -> str:
+    return INFRA_WORKFLOW_FILE
 
 
 @pytest.fixture

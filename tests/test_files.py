@@ -75,15 +75,28 @@ def safely_load_yaml_file(path_to_file: Path) -> dict[str, Union[dict, str]]:
     return file_content
 
 
-def test_workflow_file(base_dir: Path, workflow_file_name: str):
-    path_to_file = base_dir / workflow_file_name
+def test_main_workflow_file(workflows_dir: Path, main_workflow_file_name: str):
+    path_to_file = workflows_dir / main_workflow_file_name
     assert path_to_file.is_file(), (
-        f'Убедитесь, что корневая директория проекта содержит файл '
-        f'`{workflow_file_name}`, в котором описан workflow для Kittygram.'
+        f'Убедитесь, что существует workflow `{main_workflow_file_name}`,'
+        f'в котором описан workflow для Kittygram.'
     )
     workflow = safely_load_yaml_file(path_to_file)
     assert workflow, (
-        f'Убедитесь, что файл `{workflow_file_name}` в корневой директории '
+        f'Убедитесь, что workflow `{main_workflow_file_name}` '
+        'проекта содержит настройку workflow проекта.'
+    )
+
+
+def test_infra_workflow_file(workflows_dir: Path, infra_workflow_file_name: str):
+    path_to_file = workflows_dir / infra_workflow_file_name
+    assert path_to_file.is_file(), (
+        f'Убедитесь, что существует workflow `{infra_workflow_file_name}`,'
+        f'в котором описан workflow для Kittygram.'
+    )
+    workflow = safely_load_yaml_file(path_to_file)
+    assert workflow, (
+        f'Убедитесь, что workflow `{infra_workflow_file_name}` '
         'проекта содержит настройку workflow проекта.'
     )
 
